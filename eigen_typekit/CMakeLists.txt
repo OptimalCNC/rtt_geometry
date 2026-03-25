@@ -20,6 +20,7 @@ include_directories(${EIGEN3_INCLUDE_DIRS})
 find_package(OROCOS-RTT REQUIRED)
 include(${OROCOS-RTT_USE_FILE_PATH}/UseOROCOS-RTT.cmake )
 
+add_definitions(-DBOOST_BIND_GLOBAL_PLACEHOLDERS)
 add_definitions(${EIGEN3_DEFINITIONS})
 include_directories(
   include/orocos

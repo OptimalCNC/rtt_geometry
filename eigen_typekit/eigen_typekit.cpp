@@ -138,7 +138,9 @@ namespace Eigen{
             if (arg->isAssignable()) {
 	        typedef typename RTT::internal::AssignableDataSource<VectorType >::shared_ptr sh_ptr;
             sh_ptr asarg = RTT::internal::AssignableDataSource<VectorType >::narrow( arg.get() );
-                asarg->set().conservativeResizeLike(VectorType::Zero(size));
+                if constexpr (VectorType::SizeAtCompileTime == Eigen::Dynamic) {
+                    asarg->set().conservativeResizeLike(VectorType::Zero(size));
+                }
                 asarg->updated();
                 return true;
             }
@@ -224,7 +226,9 @@ namespace Eigen{
 
             if ( bag.getType() == this->getTypeName() ) {
                 int dimension = bag.size();
-                result.conservativeResizeLike(VectorType::Zero(dimension));
+                if constexpr (VectorType::SizeAtCompileTime == Eigen::Dynamic) {
+                    result.conservativeResizeLike(VectorType::Zero(dimension));
+                }
 
                 // Get values
                 for (int i = 0; i < dimension ; i++) {
@@ -314,8 +318,11 @@ namespace Eigen{
 
     template<class VectorType>
     struct vector_index
-        : public std::binary_function<const VectorType&, int, double>
     {
+        typedef const VectorType& first_argument_type;
+        typedef int second_argument_type;
+        typedef double result_type;
+
         double operator()(const VectorType& v, int index) const
         {
             if ( index >= (int)(v.size()) || index < 0)
@@ -326,8 +333,10 @@ namespace Eigen{
     
     template<class VectorType>
     struct get_size_functor
-        : public std::unary_function<const VectorType&, int>
     {
+        typedef const VectorType& argument_type;
+        typedef int result_type;
+
         int operator()(const VectorType& cont ) const
         {
             return cont.rows();
@@ -336,9 +345,12 @@ namespace Eigen{
 
     template<class VectorType>
     struct vector_size_value_constructor
-        : public std::binary_function<int,double,VectorType>
     {
         typedef VectorType (Signature)( int, double );
+        typedef int first_argument_type;
+        typedef double second_argument_type;
+        typedef VectorType result_type;
+
         VectorType operator()(int size,double value ) const
         {
             return VectorType::Constant(size,value);
@@ -347,9 +359,11 @@ namespace Eigen{
 
     template<class VectorType>
     struct vector_array_constructor
-        : public std::unary_function<std::vector<double>,VectorType>
     {
         typedef VectorType (Signature)( std::vector<double> );
+        typedef std::vector<double> argument_type;
+        typedef VectorType result_type;
+
         VectorType operator()(std::vector<double> values) const
         {
             return VectorType::Map(values.data(),values.size());
@@ -358,9 +372,11 @@ namespace Eigen{
 
     template<class VectorType>
     struct vector_fixed_array_constructor
-        : public std::unary_function<std::vector<double>,VectorType>
     {
         typedef VectorType (Signature)( std::vector<double> );
+        typedef std::vector<double> argument_type;
+        typedef VectorType result_type;
+
         VectorType operator()(std::vector<double> values) const
         {
             int size = VectorType::RowsAtCompileTime;
@@ -378,9 +394,11 @@ namespace Eigen{
 
     template<class VectorType>
     struct vector_size_constructor
-        : public std::unary_function<int,VectorType>
     {
         typedef VectorType (Signature)( int );
+        typedef int argument_type;
+        typedef VectorType result_type;
+
         VectorType operator()(int size ) const
         {
             return VectorType::Zero(size);
@@ -389,8 +407,12 @@ namespace Eigen{
 
     template<typename MatrixType>
     struct matrix_index_functor
-        : public std::ternary_function<const MatrixType&, int, int, double>
     {
+        typedef const MatrixType& first_argument_type;
+        typedef int second_argument_type;
+        typedef int third_argument_type;
+        typedef double result_type;
+
         double operator()(const MatrixType& m, int i, int j) const{
             if ( i >= (int)(m.rows()) || i < 0 || j<0 || j>= (int)(m.cols()))
                 return 0.0;
@@ -400,9 +422,12 @@ namespace Eigen{
 
     template<typename MatrixType>
     struct matrix_i_j_constructor
-        : public std::binary_function<int,int,MatrixType>
     {
         typedef MatrixType (Signature)( int, int );
+        typedef int first_argument_type;
+        typedef int second_argument_type;
+        typedef MatrixType result_type;
+
         MatrixType operator()(int size1,int size2) const
         {
             return MatrixType::Zero(size1,size2);
