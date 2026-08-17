@@ -192,13 +192,27 @@ namespace Eigen{
                 } catch(...) {}
             }
             if (id_name) {
-                log(Error) << "EigenVectorTypeInfo: No such member : " << id_name->get() << endlog();
+                RTT::Logger::log().logf(
+                    RTT::Logger::Error,
+                    "eigen_typekit",
+                    "EigenVectorTypeInfo: No such member: %s",
+                    id_name->get().c_str());
             }
             if (id_indx) {
-                log(Error) << "EigenVectorTypeInfo: Invalid index : " << id_indx->get() <<":"<< id_indx->getTypeName() << endlog();
+                RTT::Logger::log().logf(
+                    RTT::Logger::Error,
+                    "eigen_typekit",
+                    "EigenVectorTypeInfo: Invalid index: %d:%s",
+                    id_indx->get(),
+                    id_indx->getTypeName().c_str());
             }
             if ( !id_name && ! id_indx)
-                log(Error) << "EigenVectorTypeInfo: Not a member or index : " << id <<":"<< id->getTypeName() << endlog();
+                RTT::Logger::log().logf(
+                    RTT::Logger::Error,
+                    "eigen_typekit",
+                    "EigenVectorTypeInfo: Not a member or index: %p:%s",
+                    static_cast<void*>(id.get()),
+                    id->getTypeName().c_str());
             return base::DataSourceBase::shared_ptr();
         }
 
@@ -238,14 +252,21 @@ namespace Eigen{
                     if(elem.ready())
                         result(i) = elem.get();
                     else{
-                        log(Error)<<"Could not read element "<<i+1<<endlog();
+                        RTT::Logger::log().logf(
+                            RTT::Logger::Error,
+                            "eigen_typekit",
+                            "Could not read element %d",
+                            i + 1);
                         return false;
                     }
                 }
             }else{
-                log(Error) << "Composing Property< " << this->getTypeName() << " > :"
-                           << " type mismatch, got type '"<< bag.getType()
-                           << "', expected type "<<"eigen_vector."<<endlog();
+                RTT::Logger::log().logf(
+                    RTT::Logger::Error,
+                    "eigen_typekit",
+                    "Composing Property<%s>: type mismatch, got type '%s', expected type eigen_vector",
+                    this->getTypeName().c_str(),
+                    bag.getType().c_str());
                 return false;
             }
             return true;
@@ -283,12 +304,20 @@ namespace Eigen{
                     out << i+1;
                     Property<PropertyBag> row_bag =  bag.getProperty(out.str());
                     if(!row_bag.ready()){
-                        log(Error)<<"Could not read row "<<i+1<<endlog();
+                        RTT::Logger::log().logf(
+                            RTT::Logger::Error,
+                            "eigen_typekit",
+                            "Could not read row %u",
+                            i + 1);
                         return false;
                     }
                     Property<VectorXd > row_p(row_bag.getName(),row_bag.getDescription());
                     if(!(row_p.compose(row_bag))){
-                        log(Error)<<"Could not compose row "<<i+1<<endlog();
+                        RTT::Logger::log().logf(
+                            RTT::Logger::Error,
+                            "eigen_typekit",
+                            "Could not compose row %u",
+                            i + 1);
                         return false;
                     }
                     if(row_p.ready()){
@@ -297,19 +326,30 @@ namespace Eigen{
                             result.resize(rows,cols);
                         } else
                             if(row_p.get().rows()!=(int)cols){
-                                log(Error)<<"Row "<<i+1<<" size does not match matrix columns"<<endlog();
+                                RTT::Logger::log().logf(
+                                    RTT::Logger::Error,
+                                    "eigen_typekit",
+                                    "Row %u size does not match matrix columns",
+                                    i + 1);
                                 return false;
                             }
                         result.row(i)=row_p.get();
                     }else{
-                        log(Error)<<"Property of Row "<<i+1<<"was not ready for use"<<endlog();
+                        RTT::Logger::log().logf(
+                            RTT::Logger::Error,
+                            "eigen_typekit",
+                            "Property of row %u was not ready for use",
+                            i + 1);
                         return false;
                     }
                 }
             }else {
-                log(Error) << "Composing Property< " << this->getTypeName() << " > :"
-                           << " type mismatch, got type '"<< bag.getType()
-                           << "', expected type "<<"ublas_matrix."<<endlog();
+                RTT::Logger::log().logf(
+                    RTT::Logger::Error,
+                    "eigen_typekit",
+                    "Composing Property<%s>: type mismatch, got type '%s', expected type ublas_matrix",
+                    this->getTypeName().c_str(),
+                    bag.getType().c_str());
                 return false;
             }
             return true;
@@ -382,9 +422,12 @@ namespace Eigen{
             int size = VectorType::RowsAtCompileTime;
             if(size != Eigen::Dynamic && size != values.size())
             {
-                log(Debug) << "Cannot copy an std vector of size " << values.size()
-                           << " into an eigen vector of (fixed) size " << size
-                           << endlog();
+                RTT::Logger::log().logf(
+                    RTT::Logger::Debug,
+                    "eigen_typekit",
+                    "Cannot copy an std vector of size %zu into an eigen vector of fixed size %d",
+                    values.size(),
+                    size);
                 return VectorType::Constant(size, RTT::internal::NA<double&>::na());
             }
             // NOTE: this can resize the eigen_vector
