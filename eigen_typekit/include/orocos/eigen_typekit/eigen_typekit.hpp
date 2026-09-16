@@ -24,6 +24,7 @@
 
 #include <rtt/types/TypekitPlugin.hpp>
 #include <Eigen/Core>
+#include <Eigen/Geometry>
 
 // import most common Eigen types 
 namespace Eigen {
@@ -37,6 +38,7 @@ public:
 	virtual bool loadTypes();
 	virtual bool loadConstructors();
 	virtual bool loadOperators();
+	virtual bool loadGlobals();
 };
 }
 
@@ -54,6 +56,7 @@ public:
     DECLARE_VECTOR_CORELIB_DATASOURCE_HPP(Eigen::Vector3d)
     DECLARE_VECTOR_CORELIB_DATASOURCE_HPP(Eigen::Vector4d)
     DECLARE_VECTOR_CORELIB_DATASOURCE_HPP(Eigen::Vector6d)
+    DECLARE_VECTOR_CORELIB_DATASOURCE_HPP(Eigen::Quaterniond)
 #endif
 
 #ifdef ORO_CORELIB_DATASOURCES_HPP
@@ -67,6 +70,7 @@ public:
     DECLARE_VECTOR_ORO_CORELIB_DATASOURCES_HPP(Eigen::Vector3d)
     DECLARE_VECTOR_ORO_CORELIB_DATASOURCES_HPP(Eigen::Vector4d)
     DECLARE_VECTOR_ORO_CORELIB_DATASOURCES_HPP(Eigen::Vector6d)
+    DECLARE_VECTOR_ORO_CORELIB_DATASOURCES_HPP(Eigen::Quaterniond)
 #endif
 
 #ifdef ORO_OUTPUT_PORT_HPP
@@ -75,6 +79,7 @@ public:
     extern template class RTT::OutputPort< Eigen::Vector3d >;
     extern template class RTT::OutputPort< Eigen::Vector4d >;
     extern template class RTT::OutputPort< Eigen::Vector6d >;
+    extern template class RTT::OutputPort< Eigen::Quaterniond >;
 #endif
 
 #ifdef ORO_INPUT_PORT_HPP
@@ -83,6 +88,7 @@ public:
     extern template class RTT::InputPort< Eigen::Vector3d >;
     extern template class RTT::InputPort< Eigen::Vector4d >;
     extern template class RTT::InputPort< Eigen::Vector6d >;
+    extern template class RTT::InputPort< Eigen::Quaterniond >;
 #endif
 
 #ifdef ORO_PROPERTY_HPP
@@ -91,6 +97,7 @@ public:
     extern template class RTT::Property< Eigen::Vector3d >;
     extern template class RTT::Property< Eigen::Vector4d >;
     extern template class RTT::Property< Eigen::Vector6d >;
+    extern template class RTT::Property< Eigen::Quaterniond >;
 #endif
 
 #ifdef ORO_CORELIB_ATTRIBUTE_HPP
@@ -103,6 +110,7 @@ public:
     DECLARE_VECTOR_ORO_CORELIB_ATTRIBUTE_HPP(Eigen::Vector3d)
     DECLARE_VECTOR_ORO_CORELIB_ATTRIBUTE_HPP(Eigen::Vector4d)
     DECLARE_VECTOR_ORO_CORELIB_ATTRIBUTE_HPP(Eigen::Vector6d)
+    DECLARE_VECTOR_ORO_CORELIB_ATTRIBUTE_HPP(Eigen::Quaterniond)
 #endif
 
 
@@ -124,10 +132,10 @@ public:
     extern template class RTT::internal::ConstantDataSource< MatrixType >; \
     extern template class RTT::internal::ReferenceDataSource< MatrixType >;
     
-    DECLARE_MATRIX_CORELIB_DATASOURCE_HPP(Eigen::MatrixXd)
-    DECLARE_MATRIX_CORELIB_DATASOURCE_HPP(Eigen::Matrix2d)
-    DECLARE_MATRIX_CORELIB_DATASOURCE_HPP(Eigen::Matrix3d)
-    DECLARE_MATRIX_CORELIB_DATASOURCE_HPP(Eigen::Matrix4d)
+    DECLARE_MATRIX_ORO_CORELIB_DATASOURCES_HPP(Eigen::MatrixXd)
+    DECLARE_MATRIX_ORO_CORELIB_DATASOURCES_HPP(Eigen::Matrix2d)
+    DECLARE_MATRIX_ORO_CORELIB_DATASOURCES_HPP(Eigen::Matrix3d)
+    DECLARE_MATRIX_ORO_CORELIB_DATASOURCES_HPP(Eigen::Matrix4d)
 #endif
 #ifdef ORO_OUTPUT_PORT_HPP
     extern template class RTT::OutputPort< Eigen::MatrixXd >;
@@ -161,4 +169,3 @@ public:
 #endif // ifndef _MSC_VER
 
 #endif // ifndef EIGEN_TYPEKIT_HPP
-
